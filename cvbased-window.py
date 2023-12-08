@@ -20,21 +20,34 @@ def transformed_frame(frame):
 
 def masking(frame):
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-
     l = np.array([0,0,200])
     u = np.array([255,50,255])
-
     mask = cv2.inRange(hsv, l, u)
+    return mask
+
+def threshold(frame, mask):
     result = cv2.bitwise_and(frame, frame, mask=mask)
     return result
 
+def midlane_coordinates(frame):
+    histogram = np.sum(frame[frame.shape[0]//2,:], axis =0)
+    midpoint = int(histogram.shape[0]/2)
+    left_x = np.argmax(histogram[:midpoint])
+    right_x = np.argmax(histogram[midpoint:]) + midpoint
+    return (left_x + right_x) / 2
+
 def main():
-    #filename = sys.argv[1]
     filename = "nonperturbed1.png"
     img = cv2.imread(filename)
+
     frame = cv2.resize(img, (640,480))
+
     frame = transformed_frame(frame)
-    frame = masking(frame)
+    mask = masking(frame)
+    frame = threshold(frame,mask)
+
+    mid = midlane_coordinates(frame)
+    print(mid)
     cv2.imshow('frame',frame)
     cv2.waitKey(0)
 main()
