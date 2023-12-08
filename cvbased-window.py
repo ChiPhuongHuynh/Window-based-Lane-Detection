@@ -35,19 +35,23 @@ def midlane_coordinates(frame):
     left_x = np.argmax(histogram[:midpoint])
     right_x = np.argmax(histogram[midpoint:]) + midpoint
     return (left_x + right_x) / 2
-
-def main():
-    filename = "nonperturbed1.png"
+def pipeline(filename):
     img = cv2.imread(filename)
-
     frame = cv2.resize(img, (640,480))
-
     frame = transformed_frame(frame)
     mask = masking(frame)
     frame = threshold(frame,mask)
-
     mid = midlane_coordinates(frame)
+    return mid
+
+def main():
+    filename = "nonperturbed1.png"
+
+    mid = pipeline(filename)
     print(mid)
+    
+    """
     cv2.imshow('frame',frame)
-    cv2.waitKey(0)
+    cv2.waitKey(0)"""
 main()
+
