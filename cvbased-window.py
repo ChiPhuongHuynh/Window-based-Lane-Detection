@@ -5,6 +5,11 @@ import sys
 def nothing(x):
     pass
 
+"""
+Does bird eye transformation on an image sized 640x480
+Input: a cv.open image
+Output: bird's eye view image
+"""
 def transformed_frame(frame):
     lower_right = (625, 396)
     upper_right = (427, 288)
@@ -18,6 +23,12 @@ def transformed_frame(frame):
     transformed_frame = cv2.warpPerspective(frame, matrix, (640,480))
     return transformed_frame
 
+
+"""
+Apply custom HSV color masking to the image
+Input: a cv.open image
+Output: color mask
+"""
 def masking(frame):
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     l = np.array([0,0,200])
@@ -25,10 +36,20 @@ def masking(frame):
     mask = cv2.inRange(hsv, l, u)
     return mask
 
+"""
+Apply thresholding to the image
+Input: cv.open image and a color mask
+Output: Black background and white lane image
+"""
 def threshold(frame, mask):
     result = cv2.bitwise_and(frame, frame, mask=mask)
     return result
 
+"""
+Does histogram based lane coordinate calculation
+Input: cv.open image
+Output: values of middle lane line
+"""
 def midlane_coordinates(frame):
     histogram = np.sum(frame[240:, :], axis =0)
     midpoint = int(histogram.shape[0]/2)
@@ -47,12 +68,18 @@ def midlane_coordinates(frame):
         return (left_x + right_x) / 2
 
     return -1
-
+"""
+Generate mid lane lines for visualization
+Input: cv.open image and middle line x-coordinate
+Output: image with middle lane drawn 
+"""
 def midlane_draw(frame, mid):
     cv2.line(frame,(int(mid-50),0),(int(mid-50),640),(255,0,0),5)
     cv2.line(frame, (int(mid+50),0),(int(mid+50),640),(255,0,0),5)
     return frame
-
+"""
+Applies detection as a pipeline
+"""
 def pipeline(filename):
     #filename = "nonperturbed1.png"
     img = cv2.imread(filename)
