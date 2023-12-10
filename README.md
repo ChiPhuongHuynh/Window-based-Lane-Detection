@@ -8,7 +8,10 @@ Requirements:
 
 For edge detection on an alternate picture, pass the filename into the function pipeline(), which returns the
 midlane value if it is not in an error state. 
-For generation of figures in paper, run cvbased-window.py as is.
+
+Description of functions input and output is described in comments. Additional information on computation in paper.
+
+For generation of figure 2 in paper, run cvbased-window.py as is.
 
 ## PID LANE FOLLOWING CONTROLLER
 
